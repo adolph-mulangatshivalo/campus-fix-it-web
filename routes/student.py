@@ -47,13 +47,17 @@ def submit_report():
                 ext = file.filename.rsplit('.', 1)[1].lower()
                 filename = secure_filename(f"{uuid.uuid4().hex}.{ext}")
                 
-                # Ensure upload folder exists
-                upload_folder = current_app.config['UPLOAD_FOLDER']
-                os.makedirs(upload_folder, exist_ok=True)
-                
-                file_path = os.path.join(upload_folder, filename)
-                file.save(file_path)
-                image_path = filename
+                try:
+                    # Ensure upload folder exists
+                    upload_folder = current_app.config.get('UPLOAD_FOLDER', '/tmp')
+                    os.makedirs(upload_folder, exist_ok=True)
+                    
+                    file_path = os.path.join(upload_folder, filename)
+                    file.save(file_path)
+                    image_path = filename
+                except Exception as e:
+                    print(f"Image upload skipped (likely due to read-only filesystem on Vercel): {e}")
+                    image_path = None
         
         try:
             create_report(g.db, session['user_id'], category_id, title, description, location, image_path)
