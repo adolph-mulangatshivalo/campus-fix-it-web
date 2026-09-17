@@ -38,8 +38,14 @@
             <p style="margin-bottom: 2rem; font-weight: 500;">{{ report.location }}</p>
             
             {% if report.image_path %}
-            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Attached Photo</h4>
-            <img src="{{ url_for('uploaded_file', filename=report.image_path) }}" alt="Issue Photo" style="max-width: 100%; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+            <div style="margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase;">Attached Image</h4>
+                {% if report.image_path.startswith('http') %}
+                <img src="{{ report.image_path }}" alt="Issue Photo" style="max-width: 100%; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+                {% else %}
+                <img src="{{ url_for('uploaded_file', filename=report.image_path) }}" alt="Issue Photo" style="max-width: 100%; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+                {% endif %}
+            </div>
             {% endif %}
         </div>
         

@@ -31,22 +31,23 @@ app.register_blueprint(worker_bp, url_prefix='/worker')
 
 # Initialize Firebase
 firebase_creds_json = os.environ.get('FIREBASE_CREDENTIALS')
-if firebase_creds_json:
-    try:
+db = None
+try:
+    if firebase_creds_json:
         cred_dict = json.loads(firebase_creds_json)
         cred = credentials.Certificate(cred_dict)
         if not firebase_admin._apps:
-            firebase_admin.initialize_app(cred)
-    except Exception as e:
-        print(f"Error parsing FIREBASE_CREDENTIALS: {e}")
+            firebase_admin.initialize_app(cred, {
+                'storageBucket': os.environ.get('FIREBASE_STORAGE_BUCKET', 'campus-fix-it.appspot.com')
+            })
+    else:
         if not firebase_admin._apps:
-            firebase_admin.initialize_app()
-else:
-    if not firebase_admin._apps:
-        # Default initialization (e.g. using GOOGLE_APPLICATION_CREDENTIALS)
-        firebase_admin.initialize_app()
-
-db = firestore.client()
+            firebase_admin.initialize_app(options={
+                'storageBucket': os.environ.get('FIREBASE_STORAGE_BUCKET', 'campus-fix-it.appspot.com')
+            })
+    db = firestore.client()
+except Exception as e:
+    print(f"Firebase Initialization Error: {e}")
 
 @app.before_request
 def before_request():

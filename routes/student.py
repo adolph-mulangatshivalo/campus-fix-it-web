@@ -2,6 +2,7 @@ import os
 import uuid
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g, current_app
 from werkzeug.utils import secure_filename
+from firebase_admin import storage
 from utils.decorators import login_required
 from models.category import get_all_categories
 from models.report import create_report, get_student_reports, get_report_by_id
@@ -48,15 +49,13 @@ def submit_report():
                 filename = secure_filename(f"{uuid.uuid4().hex}.{ext}")
                 
                 try:
-                    # Ensure upload folder exists
-                    upload_folder = current_app.config.get('UPLOAD_FOLDER', '/tmp')
-                    os.makedirs(upload_folder, exist_ok=True)
-                    
-                    file_path = os.path.join(upload_folder, filename)
-                    file.save(file_path)
-                    image_path = filename
+                    bucket = storage.bucket()
+                    blob = bucket.blob(f'reports/{filename}')
+                    blob.upload_from_file(file, content_type=file.content_type)
+                    blob.make_public()
+                    image_path = blob.public_url
                 except Exception as e:
-                    print(f"Image upload skipped (likely due to read-only filesystem on Vercel): {e}")
+                    print(f"Image upload failed: {e}")
                     image_path = None
         
         try:
