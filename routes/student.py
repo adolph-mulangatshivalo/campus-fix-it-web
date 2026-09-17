@@ -49,22 +49,17 @@ def submit_report():
                 filename = secure_filename(f"{uuid.uuid4().hex}.{ext}")
                 
                 try:
-                    # Upload to ImgBB
-                    api_key = os.environ.get('IMGBB_API_KEY')
-                    if not api_key:
-                        print("IMGBB_API_KEY is not set. Image upload skipped.")
-                        image_path = None
+                    # Upload to Catbox (no API key required, 100% free forever)
+                    response = requests.post(
+                        'https://catbox.moe/user/api.php',
+                        data={'reqtype': 'fileupload'},
+                        files={'fileToUpload': (filename, file.read(), file.content_type)}
+                    )
+                    if response.status_code == 200:
+                        image_path = response.text.strip()
                     else:
-                        response = requests.post(
-                            'https://api.imgbb.com/1/upload',
-                            data={'key': api_key},
-                            files={'image': (filename, file.read(), file.content_type)}
-                        )
-                        if response.status_code == 200:
-                            image_path = response.json()['data']['url']
-                        else:
-                            print(f"ImgBB upload failed: {response.text}")
-                            image_path = None
+                        print(f"Catbox upload failed: {response.text}")
+                        image_path = None
                 except Exception as e:
                     print(f"Image upload failed: {e}")
                     image_path = None
