@@ -49,24 +49,25 @@ def submit_report():
                 filename = secure_filename(f"{uuid.uuid4().hex}.{ext}")
                 
                 try:
-                    # Upload to ImgBB
+                    # Upload to ImgBB via base64
                     api_key = os.environ.get('IMGBB_API_KEY')
                     if not api_key:
-                        print("IMGBB_API_KEY is not set. Image upload skipped.")
+                        flash("IMGBB_API_KEY is not set in Vercel Environment Variables!", "danger")
                         image_path = None
                     else:
+                        import base64
+                        encoded_image = base64.b64encode(file.read()).decode('utf-8')
                         response = requests.post(
                             'https://api.imgbb.com/1/upload',
-                            data={'key': api_key},
-                            files={'image': (filename, file.read(), file.content_type)}
+                            data={'key': api_key, 'image': encoded_image}
                         )
                         if response.status_code == 200:
                             image_path = response.json()['data']['url']
                         else:
-                            print(f"ImgBB upload failed: {response.text}")
+                            flash(f"ImgBB API Error: {response.text}", "danger")
                             image_path = None
                 except Exception as e:
-                    print(f"Image upload failed: {e}")
+                    flash(f"Upload Exception: {str(e)}", "danger")
                     image_path = None
         
         try:
