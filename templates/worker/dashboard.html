@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="responsive-header">
+    <h2>Maintenance Team Dashboard</h2>
+    <div>
+        <span style="font-weight: 600; color: var(--text-muted);">Welcome, {{ session.full_name }}</span>
+    </div>
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card" style="background: #FFF; border: var(--border-width) solid var(--border-color); padding: 1.5rem; box-shadow: var(--neo-shadow);">
+        <h3 style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 1rem;">Total Assigned</h3>
+        <div style="font-size: 2.5rem; font-weight: 800;">{{ total }}</div>
+    </div>
+    
+    <div class="stat-card" style="background: #FEF08A; border: var(--border-width) solid var(--border-color); padding: 1.5rem; box-shadow: var(--neo-shadow);">
+        <h3 style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 1rem;">In Progress</h3>
+        <div style="font-size: 2.5rem; font-weight: 800;">{{ in_progress }}</div>
+    </div>
+    
+    <div class="stat-card" style="background: #BBF7D0; border: var(--border-width) solid var(--border-color); padding: 1.5rem; box-shadow: var(--neo-shadow);">
+        <h3 style="margin-bottom: 0.5rem; color: var(--text-muted); font-size: 1rem;">Fixed</h3>
+        <div style="font-size: 2.5rem; font-weight: 800;">{{ resolved }}</div>
+    </div>
+</div>
+
+<div class="table-container" style="background: #FFF; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow);">
+    <div style="padding: 1.5rem; border-bottom: 2px solid var(--border-color); background: #F9FAFB;">
+        <h3 style="margin: 0;">My Assigned Tasks</h3>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Date Assigned</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td data-label="Task ID"><strong>#{{ report.id }}</strong></td>
+                <td data-label="Title">{{ report.title }}</td>
+                <td data-label="Category">{{ report.category_name }}</td>
+                <td data-label="Status">
+                    <span class="badge badge-{{ report.status.lower().replace(' ', '-') }}">
+                        {{ report.status }}
+                    </span>
+                </td>
+                <td data-label="Date Assigned">{{ report.created_at.strftime('%Y-%m-%d') }}</td>
+                <td data-label="Action">
+                    <a href="{{ url_for('worker.manage_report', report_id=report.id) }}" class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">View Task</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                    You have no assigned tasks at the moment.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

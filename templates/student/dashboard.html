@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="responsive-header">
+    <h2>Student Dashboard</h2>
+    <a href="{{ url_for('student.submit_report') }}" class="btn btn-primary" style="width: auto;">+ New Report</a>
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Total Reports</h3>
+        <div class="stat-value">{{ total }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>In Progress</h3>
+        <div class="stat-value">{{ in_progress }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Fixed</h3>
+        <div class="stat-value">{{ resolved }}</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td data-label="Title">{{ report.title }}</td>
+                <td data-label="Category">{{ report.category_name }}</td>
+                <td data-label="Date">{{ report.created_at.strftime('%b %d, %Y') }}</td>
+                <td data-label="Status">
+                    <span class="badge badge-{{ report.status|lower|replace(' ', '-') }}">
+                        {{ report.status }}
+                    </span>
+                </td>
+                <td data-label="Action">
+                    <a href="{{ url_for('student.view_report', report_id=report.id) }}" class="action-btn">View</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                    You haven't submitted any reports yet. Click "+ New Report" to get started.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container" style="max-width: 600px;">
+    <h2 class="auth-title">Submit Maintenance Report</h2>
+    
+    <form method="POST" action="{{ url_for('student.submit_report') }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title" class="form-label">Issue Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Broken sink in bathroom" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category_id" class="form-label">Category</label>
+            <select id="category_id" name="category_id" class="form-control" required>
+                <option value="" disabled selected>Select a category</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Building A, 2nd Floor Men's Restroom" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Provide details about the issue..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="image" class="form-label">Upload Photo (Optional)</label>
+            <input type="file" id="image" name="image" class="form-control" accept="image/*">
+            <small style="color: var(--text-muted);">Supported formats: JPG, PNG, GIF</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit Report</button>
+    </form>
+</div>
+{% endblock %}

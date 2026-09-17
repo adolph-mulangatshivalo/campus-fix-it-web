@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    
+    <!-- Role Tabs -->
+    <div style="display: flex; margin-bottom: 2rem; border-bottom: 1px solid var(--border);">
+        <button id="tab-student" onclick="setRole('student')" style="flex: 1; padding: 1rem; background: none; border: none; border-bottom: 3px solid {% if active_role == 'student' %}var(--primary){% else %}transparent{% endif %}; color: {% if active_role == 'student' %}var(--primary){% else %}var(--text-muted){% endif %}; font-weight: 600; cursor: pointer; font-size: 1rem;">Student</button>
+        <button id="tab-worker" onclick="setRole('worker')" style="flex: 1; padding: 1rem; background: none; border: none; border-bottom: 3px solid {% if active_role == 'worker' %}var(--primary){% else %}transparent{% endif %}; color: {% if active_role == 'worker' %}var(--primary){% else %}var(--text-muted){% endif %}; font-weight: 600; cursor: pointer; font-size: 1rem;">Worker</button>
+        <button id="tab-admin" onclick="setRole('admin')" style="flex: 1; padding: 1rem; background: none; border: none; border-bottom: 3px solid {% if active_role == 'admin' %}var(--primary){% else %}transparent{% endif %}; color: {% if active_role == 'admin' %}var(--primary){% else %}var(--text-muted){% endif %}; font-weight: 600; cursor: pointer; font-size: 1rem;">Admin</button>
+    </div>
+
+    <h2 id="form-title" class="auth-title" style="margin-bottom: 1.5rem;">
+        {% if active_role == 'admin' %}Admin Login
+        {% elif active_role == 'worker' %}Worker Login
+        {% else %}Student Login{% endif %}
+    </h2>
+    
+    <form method="POST" action="{{ url_for('auth.login') }}">
+        <input type="hidden" name="login_role" id="login_role" value="{{ active_role }}">
+        <div class="form-group">
+            <label for="email" id="email_label" class="form-label">
+                {% if active_role == 'admin' %}Admin ID
+                {% elif active_role == 'worker' %}Worker ID
+                {% else %}Student Number or Email{% endif %}
+            </label>
+            <input type="text" id="email" name="email" class="form-control" placeholder="{% if active_role == 'admin' %}e.g. ADM111{% elif active_role == 'worker' %}e.g. WOR111{% else %}e.g. 25019587{% endif %}" autocomplete="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id="submit-btn">
+            {% if active_role == 'admin' %}Sign In as Admin
+            {% elif active_role == 'worker' %}Sign In as Worker
+            {% else %}Sign In as Student{% endif %}
+        </button>
+    </form>
+    
+    <div class="auth-links" id="register-link" style="{% if active_role in ['admin', 'worker'] %}display: none;{% endif %}">
+        Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>
+    </div>
+</div>
+
+<script>
+    function setRole(role) {
+        // Update the theme globally
+        document.body.className = 'theme-' + role;
+        
+        // Update hidden input
+        document.getElementById('login_role').value = role;
+        
+        const tabStudent = document.getElementById('tab-student');
+        const tabAdmin = document.getElementById('tab-admin');
+        const tabWorker = document.getElementById('tab-worker');
+        const title = document.getElementById('form-title');
+        const emailLabel = document.getElementById('email_label');
+        const emailInput = document.getElementById('email');
+        const btn = document.getElementById('submit-btn');
+        const regLink = document.getElementById('register-link');
+        const navReg = document.getElementById('nav-register');
+        
+        tabStudent.style.borderBottomColor = 'transparent';
+        tabStudent.style.color = 'var(--text-muted)';
+        tabAdmin.style.borderBottomColor = 'transparent';
+        tabAdmin.style.color = 'var(--text-muted)';
+        tabWorker.style.borderBottomColor = 'transparent';
+        tabWorker.style.color = 'var(--text-muted)';
+        
+        if (role === 'admin') {
+            tabAdmin.style.borderBottomColor = 'var(--primary)';
+            tabAdmin.style.color = 'var(--primary)';
+            title.textContent = 'Admin Login';
+            emailLabel.textContent = 'Admin ID';
+            emailInput.placeholder = 'e.g. ADM111';
+            btn.textContent = 'Sign In as Admin';
+            regLink.style.display = 'none'; // Admins can't register here
+            if (navReg) navReg.style.display = 'none';
+        } else if (role === 'worker') {
+            tabWorker.style.borderBottomColor = 'var(--primary)';
+            tabWorker.style.color = 'var(--primary)';
+            title.textContent = 'Worker Login';
+            emailLabel.textContent = 'Worker ID';
+            emailInput.placeholder = 'e.g. WOR111';
+            btn.textContent = 'Sign In as Worker';
+            regLink.style.display = 'none'; // Workers can't register here
+            if (navReg) navReg.style.display = 'none';
+        } else {
+            tabStudent.style.borderBottomColor = 'var(--primary)';
+            tabStudent.style.color = 'var(--primary)';
+            title.textContent = 'Student Login';
+            emailLabel.textContent = 'Student Number or Email';
+            emailInput.placeholder = 'e.g. 25019587';
+            btn.textContent = 'Sign In as Student';
+            regLink.style.display = 'block';
+            if (navReg) navReg.style.display = 'inline-block';
+        }
+        
+        emailInput.oninput = function() {
+            if (role === 'admin' || role === 'worker') {
+                this.value = this.value.toUpperCase();
+            } else {
+                this.value = this.value.toLowerCase();
+            }
+        };
+        
+        emailInput.onblur = function() {
+            if (role === 'student') {
+                let val = this.value.trim();
+                if (val && !val.includes('@')) {
+                    this.value = val.toLowerCase() + '@univen.mvula.ac.za';
+                }
+            }
+        };
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        setRole('{{ active_role|default("student") }}');
+    });
+</script>
+{% endblock %}

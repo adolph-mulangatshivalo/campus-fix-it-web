@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="responsive-header">
+    <div>
+        <h2>Admin Dashboard</h2>
+        <p style="color: var(--text-muted);">Manage all campus maintenance reports</p>
+    </div>
+    <div>
+        <a href="{{ url_for('admin.manage_staff') }}" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.95rem;">Manage Staff</a>
+    </div>
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Total Reports</h3>
+        <div class="stat-value">{{ total }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>New Submitted</h3>
+        <div class="stat-value" style="color: #4338CA;">{{ new_reports }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>In Progress</h3>
+        <div class="stat-value" style="color: #B45309;">{{ in_progress }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>Fixed</h3>
+        <div class="stat-value" style="color: #065F46;">{{ resolved }}</div>
+    </div>
+</div>
+
+<div class="table-container" style="padding: 1.5rem; margin-bottom: 2rem;">
+    <form method="GET" action="{{ url_for('admin.dashboard') }}" class="responsive-flex-form">
+        <div style="flex: 1;">
+            <label for="search" class="form-label">Search</label>
+            <input type="text" id="search" name="search" class="form-control" placeholder="Search by title, location, or student ID..." value="{{ request.args.get('search', '') }}">
+        </div>
+        <div>
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-control">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if request.args.get('category') == category.id|string %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-control">
+                <option value="">All Statuses</option>
+                <option value="Submitted" {% if request.args.get('status') == 'Submitted' %}selected{% endif %}>Submitted</option>
+                <option value="Under Review" {% if request.args.get('status') == 'Under Review' %}selected{% endif %}>Under Review</option>
+                <option value="Assigned" {% if request.args.get('status') == 'Assigned' %}selected{% endif %}>Assigned</option>
+                <option value="In Progress" {% if request.args.get('status') == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Fixed" {% if request.args.get('status') == 'Fixed' %}selected{% endif %}>Fixed</option>
+                <option value="Rejected" {% if request.args.get('status') == 'Rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn" style="background: #E5E7EB; margin-left: 0.5rem;">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title & Category</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+                <td data-label="Date">{{ report.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td data-label="Report ID"><strong>#{{ report.id }}</strong></td>
+                <td data-label="Title">{{ report.title }}</td>
+                <td data-label="Category">{{ report.category_name }}</td>
+                <td data-label="Status">
+                    <span class="badge badge-{{ report.status|lower|replace(' ', '-') }}">
+                        {{ report.status }}
+                    </span>
+                </td>
+                <td data-label="Action"><a href="{{ url_for('admin.manage_report', report_id=report.id) }}" class="action-btn">Manage</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                    No reports match your filters.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

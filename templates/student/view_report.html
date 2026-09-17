@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('student.dashboard') }}" style="color: var(--text-muted); text-decoration: none;">&larr; Back to Dashboard</a>
+</div>
+
+<div class="table-container" style="padding: 2rem;">
+    <div class="responsive-header" style="align-items: flex-start; margin-bottom: 2rem;">
+        <div>
+            <h2 style="margin-bottom: 0.5rem;">{{ report.title }}</h2>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">
+                Reported on {{ report.created_at.strftime('%b %d, %Y at %I:%M %p') }} &bull; {{ report.category_name }}
+            </div>
+        </div>
+        <div>
+            <span class="badge badge-{{ report.status.lower().replace(' ', '-') }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                {{ report.status }}
+            </span>
+        </div>
+    </div>
+    
+    <hr style="border: 0; border-top: 1px solid var(--border); margin-bottom: 2rem;">
+    
+    <div class="responsive-split-grid">
+        <div>
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Description</h4>
+            <p style="background: #FFF; border: var(--border-width) solid var(--border-color); padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--neo-shadow); font-weight: 500;">
+                {{ report.description }}
+            </p>
+            
+            {% if report.worker_name %}
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Assigned Maintenance Worker</h4>
+            <p style="margin-bottom: 2rem; font-weight: 500;"><span style="background: var(--primary); color: #fff; padding: 0.25rem 0.5rem;">{{ report.worker_name }}</span></p>
+            {% endif %}
+            
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Location</h4>
+            <p style="margin-bottom: 2rem; font-weight: 500;">{{ report.location }}</p>
+            
+            {% if report.image_path %}
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Attached Photo</h4>
+            <img src="{{ url_for('uploaded_file', filename=report.image_path) }}" alt="Issue Photo" style="max-width: 100%; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+            {% endif %}
+        </div>
+        
+        <div style="background: #FFF; padding: 1.5rem; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow);">
+            <h4 style="margin-bottom: 1.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Status Updates</h4>
+            
+            {% if report.updates %}
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                {% for update in report.updates %}
+                    <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: #000;">
+                            {{ update.created_at.strftime('%b %d, %I:%M %p') }}
+                        </div>
+                        <div style="font-weight: 800; font-size: 1rem; margin-top: 0.25rem;">
+                            Status changed to: <span class="badge badge-{{ update.status.lower().replace(' ', '-') }}">{{ update.status }}</span>
+                        </div>
+                        {% if update.comment %}
+                        <div style="font-size: 0.95rem; font-weight: 500; color: #333; margin-top: 0.5rem; background: #FEF08A; padding: 0.5rem; border: 2px solid #000;">
+                            "{{ update.comment }}"
+                        </div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #000; margin-top: 0.5rem; text-align: right;">
+                            - {{ update.admin_name }} (Maintenance)
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                </div>
+            {% else %}
+                <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">No updates yet. Your report has been submitted and is awaiting review.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('worker.dashboard') }}" style="color: var(--text-muted); text-decoration: none;">&larr; Back to Dashboard</a>
+</div>
+
+<div class="table-container" style="padding: 2rem;">
+    <div class="responsive-header" style="align-items: flex-start; margin-bottom: 1rem;">
+        <div>
+            <h2 style="margin-bottom: 0.5rem;">Task #{{ report.id }}: {{ report.title }}</h2>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">
+                Category: <strong>{{ report.category_name }}</strong>
+            </div>
+        </div>
+        <div>
+            <span class="badge badge-{{ report.status.lower().replace(' ', '-') }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                Current Status: {{ report.status }}
+            </span>
+        </div>
+    </div>
+    
+    <div class="responsive-split-grid" style="margin-top: 2rem;">
+        <div>
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Location & Instructions</h4>
+            <p style="background: #FFF; border: var(--border-width) solid var(--border-color); padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--neo-shadow); font-weight: 500;">
+                <strong>Location:</strong> {{ report.location }}<br><br>
+                <strong>Description:</strong> {{ report.description }}
+            </p>
+            
+            {% if report.image_path %}
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Attached Photo</h4>
+            <img src="{{ url_for('uploaded_file', filename=report.image_path) }}" alt="Issue Photo" style="max-width: 100%; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+            {% endif %}
+        </div>
+        
+        <div>
+            <div style="background: #FFF; padding: 1.5rem; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Update Task</h4>
+                
+                <form method="POST" action="{{ url_for('worker.manage_report', report_id=report.id) }}">
+                    {% if report.status == 'Assigned' %}
+                    <p style="margin-bottom: 1rem; font-size: 0.9rem;">When you arrive at the location and begin work, update the status to In Progress.</p>
+                    <input type="hidden" name="action" value="start">
+                    <button type="submit" class="btn" style="width: 100%; background: #EAB308; color: #000;">Mark as In Progress</button>
+                    {% elif report.status == 'In Progress' %}
+                    <p style="margin-bottom: 1rem; font-size: 0.9rem;">Once the issue is fully fixed, you can resolve the task.</p>
+                    
+                    <div class="form-group">
+                        <label for="comment" class="form-label">Resolution Details (Optional)</label>
+                        <textarea id="comment" name="comment" class="form-control" rows="3" placeholder="What was fixed?"></textarea>
+                    </div>
+                    
+                    <input type="hidden" name="action" value="resolve">
+                    <button type="submit" class="btn" style="width: 100%; background: #22C55E; color: #fff;">Mark as Fixed</button>
+                    {% elif report.status == 'Fixed' %}
+                    <div style="background: #BBF7D0; padding: 1rem; text-align: center; font-weight: bold; border: 2px solid #000;">
+                        This task has been fixed.
+                    </div>
+                    {% else %}
+                    <div style="background: #E5E7EB; padding: 1rem; text-align: center; font-weight: bold; border: 2px solid #000;">
+                        Status is currently {{ report.status }}.
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+            
+            <div style="background: #FFF; padding: 1.5rem; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow);">
+                <h4 style="margin-bottom: 1rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Reporter Information</h4>
+                <div style="font-size: 0.9rem;">
+                    <p><strong>Name:</strong> {{ report.student_name }}</p>
+                    <p><strong>Contact:</strong> <a href="mailto:{{ report.email }}">{{ report.email }}</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('admin.dashboard') }}" style="color: var(--text-muted); text-decoration: none;">&larr; Back to Admin Dashboard</a>
+</div>
+
+<div class="table-container" style="padding: 2rem;">
+    <div class="responsive-header" style="align-items: flex-start; margin-bottom: 1rem;">
+        <div>
+            <h2 style="margin-bottom: 0.5rem;">Report #{{ report.id }}: {{ report.title }}</h2>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">
+                Category: <strong>{{ report.category_name }}</strong>
+            </div>
+        </div>
+        <div>
+            <span class="badge badge-{{ report.status.lower().replace(' ', '-') }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                Current Status: {{ report.status }}
+            </span>
+        </div>
+    </div>
+    
+    <div class="responsive-flex-form" style="border: var(--border-width) solid var(--border-color); background: #FFF; padding: 1rem; margin-bottom: 2rem; font-size: 0.9rem; box-shadow: var(--neo-shadow);">
+        <div><strong>Submitted By:</strong> {{ report.student_name }}</div>
+        <div><strong>Student ID:</strong> {{ report.student_number }}</div>
+        <div><strong>Email:</strong> <a href="mailto:{{ report.email }}" style="color: var(--primary); font-weight: bold;">{{ report.email }}</a></div>
+        <div><strong>Date:</strong> {{ report.created_at.strftime('%b %d, %Y at %I:%M %p') }}</div>
+        {% if report.worker_name %}
+        <div style="background: var(--primary); color: #FFF; padding: 0.25rem 0.5rem; font-weight: bold;"><strong>Worker:</strong> {{ report.worker_name }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="responsive-split-grid">
+        <div>
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Issue Description</h4>
+            <p style="background: #FFF; border: var(--border-width) solid var(--border-color); padding: 1.5rem; margin-bottom: 2rem; box-shadow: var(--neo-shadow); font-weight: 500;">
+                {{ report.description }}
+            </p>
+            
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Location</h4>
+            <p style="margin-bottom: 2rem; font-weight: 500;">{{ report.location }}</p>
+            
+            {% if report.image_path %}
+            <h4 style="margin-bottom: 0.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Attached Photo</h4>
+            <img src="{{ url_for('uploaded_file', filename=report.image_path) }}" alt="Issue Photo" style="max-width: 100%; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+            {% else %}
+            <div style="background: #E5E7EB; padding: 2rem; text-align: center; color: #000; font-weight: bold; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-top: 1rem;">
+                No photo was attached to this report.
+            </div>
+            {% endif %}
+        </div>
+        
+        <div>
+            <div style="background: #FFF; padding: 1.5rem; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Assign Worker</h4>
+                <form method="POST" action="{{ url_for('admin.manage_report', report_id=report.id) }}">
+                    <input type="hidden" name="action" value="assign_worker">
+                    <div class="form-group">
+                        <label for="worker_id" class="form-label">Select Maintenance Worker</label>
+                        <select id="worker_id" name="worker_id" class="form-control" required>
+                            <option value="">-- Select Worker --</option>
+                            {% for worker in workers %}
+                            <option value="{{ worker.id }}" {% if report.worker_id == worker.id %}selected{% endif %}>{{ worker.full_name }} ({{ worker.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%; background: #000; color: #fff;">Assign Worker</button>
+                </form>
+            </div>
+
+            <div style="background: #FFF; padding: 1.5rem; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow); margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Update Status</h4>
+                <form method="POST" action="{{ url_for('admin.manage_report', report_id=report.id) }}">
+                    <input type="hidden" name="action" value="update_status">
+                    <div class="form-group">
+                        <label for="status" class="form-label">New Status</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="Submitted" {% if report.status == 'Submitted' %}selected{% endif %}>Submitted</option>
+                            <option value="Under Review" {% if report.status == 'Under Review' %}selected{% endif %}>Under Review</option>
+                            <option value="Assigned" {% if report.status == 'Assigned' %}selected{% endif %}>Assigned</option>
+                            <option value="In Progress" {% if report.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Fixed" {% if report.status == 'Fixed' %}selected{% endif %}>Fixed</option>
+                            <option value="Rejected" {% if report.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment" class="form-label">Add Comment (Visible to student)</label>
+                        <textarea id="comment" name="comment" class="form-control" rows="3" placeholder="Provide an update for the student..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Update</button>
+                </form>
+            </div>
+            
+            <div style="background: #FFF; padding: 1.5rem; border: var(--border-width) solid var(--border-color); box-shadow: var(--neo-shadow);">
+                <h4 style="margin-bottom: 1.5rem; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 0.5rem;">Update History</h4>
+                {% if report.updates %}
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    {% for update in report.updates %}
+                        <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
+                            <div style="font-size: 0.85rem; font-weight: 700; color: #000;">
+                                {{ update.created_at.strftime('%b %d, %Y') }} by {{ update.admin_name }}
+                            </div>
+                            <div style="font-weight: 800; font-size: 1rem; margin-top: 0.25rem;">
+                                &rarr; {{ update.status }}
+                            </div>
+                            {% if update.comment %}
+                            <div style="font-size: 0.95rem; font-weight: 500; color: #333; margin-top: 0.5rem; background: #FEF08A; padding: 0.5rem; border: 2px solid #000;">
+                                "{{ update.comment }}"
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">No updates have been made to this report yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

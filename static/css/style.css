@@ -1,0 +1,511 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #FFD500; /* Neo-brutalism Yellow */
+    --primary-hover: #E5C000;
+    --secondary: #10B981; /* Emerald */
+    --background: #FFFFFF; /* Stark White for contrast */
+    --surface: #FFFFFF;
+    --text-main: #000000;
+    --text-muted: #333333;
+    --danger: #FF0000;
+    --border-color: #000000;
+    --border-width: 3px;
+    --shadow-color: #000000;
+    --neo-shadow: 6px 6px 0px var(--shadow-color);
+    --neo-shadow-hover: 2px 2px 0px var(--shadow-color);
+    --radius: 0px; /* Brutalism typically avoids rounded corners */
+    --transition: all 0.15s ease-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* Optional: very subtle dot pattern for background */
+    background-image: radial-gradient(#000000 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0;
+    background-color: #FFFDF5;
+}
+
+/* Navbar */
+.navbar {
+    background: var(--primary);
+    border-bottom: var(--border-width) solid var(--border-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: #000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-links a {
+    color: #000;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border: 2px solid transparent;
+    transition: var(--transition);
+}
+
+.navbar-links a:hover {
+    border: 2px solid #000;
+    background: #FFF;
+}
+
+/* Flash Messages */
+.flash-messages {
+    max-width: 800px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+.flash-message {
+    padding: 1rem 1.5rem;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--neo-shadow);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    background: var(--surface);
+    color: #000;
+}
+
+.flash-success { background: #4ADE80; } /* Bright Green */
+.flash-danger { background: #F87171; } /* Bright Red */
+.flash-info { background: #60A5FA; } /* Bright Blue */
+
+/* Layouts */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    flex: 1;
+    background: var(--background); /* Hides dots behind main content area if desired, or keep transparent */
+}
+
+/* Auth Card */
+.auth-container {
+    max-width: 450px;
+    margin: 4rem auto;
+    background: var(--surface);
+    padding: 2.5rem;
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--neo-shadow);
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-main);
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    border: var(--border-width) solid var(--border-color);
+    background: #FFF;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: var(--transition);
+    color: #000;
+}
+
+.form-control:focus {
+    outline: none;
+    background: #F3F4F6;
+    box-shadow: 4px 4px 0px #000;
+    transform: translate(-2px, -2px);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border: var(--border-width) solid var(--border-color);
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    text-decoration: none;
+    box-shadow: var(--neo-shadow);
+    letter-spacing: 0.05em;
+    color: #000;
+}
+
+.btn-primary {
+    background: var(--primary);
+    width: 100%;
+}
+
+.btn-primary:hover, .btn:hover {
+    transform: translate(4px, 4px);
+    box-shadow: var(--neo-shadow-hover);
+}
+
+.auth-links {
+    margin-top: 2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.auth-links a {
+    color: var(--primary);
+    text-decoration: none;
+    border-bottom: 2px solid var(--primary);
+}
+
+.auth-links a:hover {
+    color: #000;
+    border-bottom-color: #000;
+}
+
+/* Dashboards & Tables */
+.dashboard-stats { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 2rem; 
+    margin-bottom: 3rem; 
+}
+
+.stat-card { 
+    background: var(--surface); 
+    padding: 2rem; 
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--neo-shadow); 
+    text-align: center; 
+}
+
+.stat-card h3 { 
+    color: var(--text-main); 
+    font-size: 1rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em; 
+    margin-bottom: 1rem; 
+    font-weight: 700;
+}
+
+.stat-card .stat-value { 
+    font-size: 3.5rem; 
+    font-weight: 800; 
+    color: #000; 
+    line-height: 1;
+}
+
+.table-container { 
+    background: var(--surface); 
+    border: var(--border-width) solid var(--border-color);
+    box-shadow: var(--neo-shadow); 
+    overflow-x: auto; 
+    padding: 0;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    text-align: left; 
+}
+
+th, td { 
+    padding: 1.25rem 1.5rem; 
+    border-bottom: var(--border-width) solid var(--border-color); 
+}
+
+th { 
+    background-color: #E5E7EB; 
+    font-weight: 800; 
+    color: #000; 
+    font-size: 0.9rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em;
+    border-right: var(--border-width) solid var(--border-color);
+}
+
+th:last-child {
+    border-right: none;
+}
+
+td {
+    font-weight: 500;
+    border-right: var(--border-width) solid var(--border-color);
+}
+
+td:last-child {
+    border-right: none;
+}
+
+tr:last-child td { 
+    border-bottom: none; 
+}
+
+tr:hover { 
+    background-color: #FEF08A; /* Highlight yellow */
+}
+
+/* Badges */
+.badge { 
+    padding: 0.35rem 0.85rem; 
+    border: 2px solid #000; 
+    font-size: 0.85rem; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    display: inline-block; 
+    box-shadow: 2px 2px 0px #000;
+}
+
+.badge-submitted { background: #A7F3D0; color: #000; }
+.badge-under-review { background: #FDE68A; color: #000; }
+.badge-assigned { background: #93C5FD; color: #000; }
+.badge-in-progress { background: #FDBA74; color: #000; }
+.badge-fixed { background: #22C55E; color: #FFF; border-color: #000; }
+.badge-rejected { background: #FECACA; color: #000; }
+
+.action-btn { 
+    padding: 0.5rem 1rem; 
+    font-size: 0.85rem; 
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 2px solid #000;
+    background: #FFF; 
+    color: #000; 
+    text-decoration: none; 
+    transition: var(--transition); 
+    box-shadow: 3px 3px 0px #000;
+    display: inline-block;
+}
+
+.action-btn:hover { 
+    background: var(--primary); 
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px #000;
+}
+
+/* Admin Theme Overrides */
+.theme-admin {
+    --primary: #3B82F6; /* Vibrant Blue */
+    --primary-hover: #2563EB;
+    --background: #F0FDF4; /* Pale Green/Mint */
+}
+
+/* Worker Theme Overrides */
+.theme-worker {
+    --primary: #22C55E; /* Vibrant Green */
+    --primary-hover: #16A34A;
+    --background: #ECFCCB; /* Lime light background */
+}
+
+/* Student Theme Overrides */
+.theme-student {
+    --background: #FEF9C3; /* Pale Yellow background */
+}
+
+/* Responsive Utility Classes */
+.responsive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.responsive-split-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.responsive-split-grid-reverse {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+}
+
+.responsive-flex-form {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .navbar-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .navbar-links a {
+        margin-left: 0;
+        padding: 0.5rem;
+    }
+
+    .responsive-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .responsive-split-grid, 
+    .responsive-split-grid-reverse {
+        grid-template-columns: 1fr !important;
+    }
+
+    .responsive-flex-form {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    .container {
+        padding: 1rem;
+    }
+    
+    .auth-container {
+        margin: 2rem auto;
+        padding: 1.5rem;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-card:last-child:nth-child(odd) {
+        grid-column: span 2;
+    }
+    
+    .stat-card h3 {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 2rem;
+    }
+
+    /* Mobile Table Cards */
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+    
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr { 
+        border: var(--border-width) solid var(--border-color);
+        margin-bottom: 1.5rem;
+        box-shadow: 4px 4px 0px #000;
+        background: #FFF;
+    }
+    
+    td:not([colspan]) { 
+        border: none !important;
+        border-bottom: var(--border-width) solid var(--border-color) !important; 
+        position: relative;
+        padding: 1rem;
+        padding-left: 45%; 
+        min-height: 3.5rem;
+        text-align: left;
+    }
+    
+    td:not([colspan]):last-child {
+        border-bottom: none !important;
+    }
+    
+    td:not([colspan]):before { 
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        width: 40%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        content: attr(data-label);
+    }
+    
+    /* Remove padding/borders on container when it's cards */
+    .table-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        overflow-x: visible !important;
+    }
+
+    /* Prevent neo-shadows from overflowing 100vw */
+    .auth-container, .stat-card, .responsive-flex-form, .table-container > div {
+        width: calc(100% - 6px);
+        box-sizing: border-box;
+    }
+}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 id="form-title" class="auth-title" style="margin-bottom: 1.5rem;">Student Registration</h2>
+    
+    <form method="POST" action="{{ url_for('auth.register') }}">
+        <div class="form-group">
+            <label for="full_name" class="form-label">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="student_number" class="form-label">Student Number</label>
+            <input type="text" id="student_number" name="student_number" class="form-control" placeholder="e.g. 25011674" required oninput="this.value = this.value.toUpperCase(); document.getElementById('email').value = this.value ? this.value.toLowerCase() + '@univen.mvula.ac.za' : ''">
+        </div>
+        
+        <div class="form-group">
+            <label for="email" class="form-label">University Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="e.g. 25011674@univen.mvula.ac.za" pattern=".*@univen\.mvula\.ac\.za$" title="Must be your @univen.mvula.ac.za email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="confirm_password" class="form-label">Confirm Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm your password" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+    
+    <div class="auth-links">
+        Already have an account? <a href="{{ url_for('auth.login') }}">Log in here</a>
+    </div>
+</div>
+{% endblock %}
