@@ -58,7 +58,7 @@ def submit_report():
                         response = requests.post(
                             'https://api.imgbb.com/1/upload',
                             data={'key': api_key},
-                            files={'image': (filename, file.stream, file.content_type)}
+                            files={'image': (filename, file.read(), file.content_type)}
                         )
                         if response.status_code == 200:
                             image_path = response.json()['data']['url']
