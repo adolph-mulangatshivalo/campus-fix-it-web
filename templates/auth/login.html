@@ -22,7 +22,7 @@
             <label for="email" id="email_label" class="form-label">
                 {% if active_role == 'admin' %}Admin ID
                 {% elif active_role == 'worker' %}Worker ID
-                {% else %}Student Number or Email{% endif %}
+                {% else %}Student Number{% endif %}
             </label>
             <input type="text" id="email" name="email" class="form-control" placeholder="{% if active_role == 'admin' %}e.g. ADM111{% elif active_role == 'worker' %}e.g. WOR111{% else %}e.g. 25019587{% endif %}" autocomplete="username" required>
         </div>
@@ -91,7 +91,7 @@
             tabStudent.style.borderBottomColor = 'var(--primary)';
             tabStudent.style.color = 'var(--primary)';
             title.textContent = 'Student Login';
-            emailLabel.textContent = 'Student Number or Email';
+            emailLabel.textContent = 'Student Number';
             emailInput.placeholder = 'e.g. 25019587';
             btn.textContent = 'Sign In as Student';
             regLink.style.display = 'block';
