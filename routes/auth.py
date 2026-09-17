@@ -53,11 +53,15 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    # If already logged in, redirect
-    if 'user_id' in session:
+    # If already logged in and just visiting the page, redirect
+    if request.method == 'GET' and 'user_id' in session:
         return redirect(url_for('index'))
         
     if request.method == 'POST':
+        # Clear any existing session to ensure a clean login
+        if 'user_id' in session:
+            session.clear()
+            
         email = request.form.get('email')
         password = request.form.get('password')
         login_role = request.form.get('login_role')
