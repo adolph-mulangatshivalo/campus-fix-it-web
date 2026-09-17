@@ -79,10 +79,13 @@
         <tbody>
             {% for report in reports %}
             <tr>
-                <td data-label="Date">{{ report.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                <td data-label="Report ID"><strong>#{{ report.id }}</strong></td>
-                <td data-label="Title">{{ report.title }}</td>
-                <td data-label="Category">{{ report.category_name }}</td>
+                <td data-label="ID"><strong>#{{ report.id[:6] | upper }}</strong></td>
+                <td data-label="Title & Category">
+                    <div style="font-weight: 600;">{{ report.title }}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">{{ report.category_name }}</div>
+                </td>
+                <td data-label="Location">{{ report.location }}</td>
+                <td data-label="Date">{{ report.created_at.strftime('%Y-%m-%d') }}</td>
                 <td data-label="Status">
                     <span class="badge badge-{{ report.status|lower|replace(' ', '-') }}">
                         {{ report.status }}

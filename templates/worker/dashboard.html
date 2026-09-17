@@ -44,7 +44,7 @@
         <tbody>
             {% for report in reports %}
             <tr>
-                <td data-label="Task ID"><strong>#{{ report.id }}</strong></td>
+                <td data-label="Task ID"><strong>#{{ report.id[:6] | upper }}</strong></td>
                 <td data-label="Title">{{ report.title }}</td>
                 <td data-label="Category">{{ report.category_name }}</td>
                 <td data-label="Status">
