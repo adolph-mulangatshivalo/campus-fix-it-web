@@ -2,7 +2,7 @@ import os
 import uuid
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g, current_app
 from werkzeug.utils import secure_filename
-from firebase_admin import storage
+import requests
 from utils.decorators import login_required
 from models.category import get_all_categories
 from models.report import create_report, get_student_reports, get_report_by_id
@@ -49,11 +49,22 @@ def submit_report():
                 filename = secure_filename(f"{uuid.uuid4().hex}.{ext}")
                 
                 try:
-                    bucket = storage.bucket()
-                    blob = bucket.blob(f'reports/{filename}')
-                    blob.upload_from_file(file, content_type=file.content_type)
-                    blob.make_public()
-                    image_path = blob.public_url
+                    # Upload to ImgBB
+                    api_key = os.environ.get('IMGBB_API_KEY')
+                    if not api_key:
+                        print("IMGBB_API_KEY is not set. Image upload skipped.")
+                        image_path = None
+                    else:
+                        response = requests.post(
+                            'https://api.imgbb.com/1/upload',
+                            data={'key': api_key},
+                            files={'image': (filename, file.stream, file.content_type)}
+                        )
+                        if response.status_code == 200:
+                            image_path = response.json()['data']['url']
+                        else:
+                            print(f"ImgBB upload failed: {response.text}")
+                            image_path = None
                 except Exception as e:
                     print(f"Image upload failed: {e}")
                     image_path = None

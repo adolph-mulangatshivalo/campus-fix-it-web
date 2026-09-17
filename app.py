@@ -37,14 +37,10 @@ try:
         cred_dict = json.loads(firebase_creds_json)
         cred = credentials.Certificate(cred_dict)
         if not firebase_admin._apps:
-            firebase_admin.initialize_app(cred, {
-                'storageBucket': os.environ.get('FIREBASE_STORAGE_BUCKET', 'campus-fix-it.appspot.com')
-            })
+            firebase_admin.initialize_app(cred)
     else:
         if not firebase_admin._apps:
-            firebase_admin.initialize_app(options={
-                'storageBucket': os.environ.get('FIREBASE_STORAGE_BUCKET', 'campus-fix-it.appspot.com')
-            })
+            firebase_admin.initialize_app()
     db = firestore.client()
 except Exception as e:
     print(f"Firebase Initialization Error: {e}")
